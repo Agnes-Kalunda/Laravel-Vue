@@ -8,7 +8,7 @@
 export default {
     data() {
         return {
-            message: 'Welcome to your Laravel-Vue app!'
+            message: 'Welcome to your Laravel-Vue app aggiee!'
         }
     }
 }
