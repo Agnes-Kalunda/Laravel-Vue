@@ -2,59 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
 
-    protected $table = 'users'; // Specify the table name if it's not the plural of the model name
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'name',
         'email',
-        'password',
-        'remember_token',    
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
+        'email_verified_at',
         'password',
         'remember_token',
     ];
 
-    /**
-     *
-     * @var array
-     */
-    protected $casts = [
-        
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    /**
-    
-     *
-     * @var array
-     */
-    protected $guarded = [
-        'id', 
-    ];
-
-    // Defining relationships with other tables
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -65,18 +27,28 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Comment::class);
     }
 
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
+    }
+
     public function likes()
     {
         return $this->hasMany(Like::class);
     }
 
-    public function messages()
+    public function messagesSent()
     {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class, 'sender_id');
     }
 
-    public function followers()
+    public function messagesReceived()
     {
-        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+        return $this->hasMany(Message::class, 'receiver_id');
     }
 }
