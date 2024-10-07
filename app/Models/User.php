@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'remember_token',
     ];
 
     /**
@@ -44,4 +45,42 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    #relationships with other tables
+
+    public function posts(){
+        return $this->hasMany((Post::class));
+    }
+
+    public function likes(){
+        return $this->hasMany(Like::class);
+    }
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
+    public function followers(){
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+
+    }
+
+    public function following(){
+        return $this->belongsToMany(User::class,'followers', 'follower_id', 'user_id');
+    }
+
+    public function messagesSent()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function messagesReceived()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+
+
+
 }
