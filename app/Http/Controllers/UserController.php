@@ -28,6 +28,14 @@ class UserController extends Controller
             'password' => 'required|string|min:8',
 
         ]);
+
+        $user = User::create([
+            'name'=> $request->name,
+            'email'=> $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        return response()->json($user , 201);
     }
         
 
